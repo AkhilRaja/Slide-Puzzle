@@ -1,0 +1,313 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/> <!--iso-8859-1" />-->
+
+<meta http-equiv="Content-Language" content="en-us" />
+
+<meta name = "author" content="Aiga"/>
+
+<meta name ="copyright" content="&copy; 2010 AIGA "/> 
+
+<meta name="description" content="AIGA - Student Portfolio" />
+
+<meta name="keywords" content="AIGA - Student Portfolio; " />
+
+<meta name="robots" content="index,follow" />
+
+<meta http-equiv="expires" content="Fri, 26 Feb 2001 09:23:47 GMT"/>
+
+<title>AIGA - Student Portfolio.</title>
+
+<link href="layout.css" rel="stylesheet" type="text/css" media="screen" />
+</head>
+
+<body>
+<div id="AigaMasthead">
+
+</div>
+
+<div id="container">
+
+<div id="content"> 
+
+<canvas id="mycanvas" width="640" height="400" > </canvas>
+<script>
+var m_canv=document.getElementById("mycanvas");
+var m_ctxt=m_canv.getContext("2d");
+
+
+var g_mouse_position_X;
+var g_mouse_position_Y;
+
+
+
+	var g_canv_start_X=0;
+	var g_canv_start_Y=0;
+
+	var g_canv_end_X=m_canv.width;
+	var g_canv_end_Y=m_canv.height-20;	
+	
+	
+	var space_unit=1
+	0;
+	var g_BOX=-1;
+
+	var g_sequence= new Array('G','B','C','D','E','N','H','A','J','K','L','M','I','O','F',' ');	
+
+	var g_turn_count=0;
+	
+	var g_FPS_tracker=0;
+
+	var g_line_X_pos= new Array((g_canv_start_X+space_unit),(((g_canv_end_X/2)+space_unit)/2),(g_canv_end_X/2),(((g_canv_end_X/2)+				g_canv_end_X-space_unit)/2),(g_canv_end_X-space_unit));
+	
+	var g_line_Y_pos = new Array((g_canv_start_Y+space_unit),((g_canv_end_Y/2)+space_unit)/2,(g_canv_end_Y)/2,((g_canv_end_Y/2)+g_canv_end_Y-space_unit)/2,(g_canv_end_Y-space_unit));
+	
+	
+function Refresh_Screen(){
+	
+	m_ctxt.clearRect(g_canv_start_X,g_canv_start_Y,g_canv_end_X, g_canv_end_Y);
+	m_ctxt.strokeRect(g_canv_start_X,g_canv_start_Y,g_canv_end_X, g_canv_end_Y);
+}
+
+
+function event_mouse_position(l_e){
+	
+	 g_mouse_position_X=l_e.clientX;
+	 g_mouse_position_Y=l_e.clientY;
+		
+}
+
+function determine_Box(){
+	
+	g_BOX=-1;	
+	
+	////print it at a place
+	var l_i=0,l_j=0,l_BoXPosition=0,l_i_two,l_j_two;
+	
+		for(l_i=0,l_i_two=1;l_i_two<5;l_i++,l_i_two++){
+			for(l_j=0,l_j_two=1;l_j_two<5;l_j++,l_BoXPosition++,l_j_two++){
+				if(g_mouse_position_X>g_line_X_pos[l_j]&&g_mouse_position_Y>g_line_Y_pos[l_i]){
+					if(g_mouse_position_X<g_line_X_pos[l_j_two]&&g_mouse_position_Y<g_line_Y_pos[l_i_two]){
+						g_BOX=l_BoXPosition;
+						break;
+					}
+				}
+			}
+		}
+			console.log(g_BOX);
+			
+			if(g_BOX!=-1){
+				Check_Click_position_Boxes();
+				g_turn_count++;
+			}
+}
+
+function Check_Click_position_Boxes(){
+	
+	if(g_sequence[g_BOX-4]==' '){
+		g_sequence[g_BOX-4]=g_sequence[g_BOX];
+		g_sequence[g_BOX]=' ';
+	}
+	else if(g_sequence[g_BOX+4]==' '){
+		g_sequence[g_BOX+4]=g_sequence[g_BOX];
+		g_sequence[g_BOX]=' ';
+	}
+	else if(g_sequence[g_BOX+1]==' '){
+		g_sequence[g_BOX+1]=g_sequence[g_BOX];
+		g_sequence[g_BOX]=' ';
+	}
+	else if(g_sequence[g_BOX-1]==' '){
+		g_sequence[g_BOX-1]=g_sequence[g_BOX];
+		g_sequence[g_BOX]=' ';
+	}
+	
+	
+}	
+ 	
+function create_arena(){
+	
+m_ctxt.rect(g_line_X_pos[0],g_line_Y_pos[0],(g_canv_end_X-(space_unit*2)),(g_canv_end_Y-(space_unit*2)));	
+	
+	m_ctxt.moveTo((g_canv_end_X)/2,g_canv_start_Y+space_unit);
+	m_ctxt.lineTo((g_canv_end_X)/2,g_canv_end_Y-space_unit);
+	
+	m_ctxt.moveTo(((g_canv_end_X/2)+space_unit)/2,g_canv_start_Y+space_unit);
+	m_ctxt.lineTo(((g_canv_end_X/2)+space_unit)/2,g_canv_end_Y-space_unit);
+	
+	m_ctxt.moveTo(((g_canv_end_X/2)+g_canv_end_X-space_unit)/2,g_canv_start_Y+space_unit);
+	m_ctxt.lineTo(((g_canv_end_X/2)+g_canv_end_X-space_unit)/2,g_canv_end_Y-space_unit);
+	
+
+
+	m_ctxt.moveTo((g_canv_start_X+space_unit),(g_canv_end_Y)/2);
+	m_ctxt.lineTo((g_canv_end_X-space_unit),(g_canv_end_Y)/2);
+	
+	m_ctxt.moveTo((g_canv_start_X+space_unit),((g_canv_end_Y/2)+space_unit)/2);
+	m_ctxt.lineTo((g_canv_end_X-space_unit),((g_canv_end_Y/2)+space_unit)/2);
+	
+	
+	m_ctxt.moveTo((g_canv_start_X+space_unit),((g_canv_end_Y/2)+g_canv_end_Y-space_unit)/2);
+	m_ctxt.lineTo((g_canv_end_X-space_unit),((g_canv_end_Y/2)+g_canv_end_Y-space_unit)/2);
+	
+	
+	
+	m_ctxt.stroke();
+	
+	}
+	
+///////////Randomize using the algorithms ::::://///////	
+function load_array_sequence(){
+	
+
+}
+
+
+function Draw_Items_Positions(){
+	
+	
+	var l_x_pos= new Array();
+	var l_y_pos= new Array();
+	
+
+	l_x_pos[0]= ((g_canv_start_X+space_unit)+(((g_canv_end_X/2)+space_unit)/2))/2;
+	l_x_pos[1]= ((((g_canv_end_X/2)+space_unit)/2)+(g_canv_end_X/2))/2;
+	l_x_pos[2]= ((g_canv_end_X/2)+(((g_canv_end_X/2)+g_canv_end_X-space_unit)/2))/2;	
+	l_x_pos[3]= ((((g_canv_end_X/2)+g_canv_end_X-space_unit)/2)+(g_canv_end_X-space_unit))/2;
+	
+	l_y_pos[0]=((g_canv_start_Y+space_unit)+((g_canv_end_Y/2)+space_unit)/2)/2;
+	l_y_pos[1]=((((g_canv_end_Y/2)+space_unit)/2)+(g_canv_end_Y)/2)/2;
+	l_y_pos[2]= ((g_canv_end_Y)/2+((g_canv_end_Y/2)+g_canv_end_Y-space_unit)/2)/2; 
+	l_y_pos[3]= (((g_canv_end_Y/2)+g_canv_end_Y-space_unit)/2+(g_canv_end_Y-space_unit))/2;
+	
+	m_ctxt.font = "bold 16px Arial";
+	
+	var l_k=0;
+	
+	for(var l_i=0;l_i<4;l_i++){
+		for(var l_j=0;l_j<4;l_j++,l_k++)
+		{m_ctxt.fillText(g_sequence[l_k],l_x_pos[l_j],l_y_pos[l_i]);}
+	}
+	
+}
+
+function Game_Timer(){
+	
+this.second=0;
+this.minute=0;
+
+//////////////////Methods
+this.Time_Calculate = function() {
+
+		this.second++;
+	if(this.second==60){
+		this.minute++;
+		this.second=0;
+		}
+	}
+this.displayTime=function(){	
+	m_ctxt.fillText("Timer :  " + this.minute + " : " + this.second,400,400);
+	m_ctxt.fillText("Turn : " + g_turn_count, 200,400); 
+	}
+}
+
+g_Timer= new Game_Timer();
+
+
+
+
+function Game_timer_Set(){
+	
+	
+	if(g_FPS_tracker==10){
+		g_Timer.Time_Calculate();
+		g_FPS_tracker=0;
+	}
+	g_Timer.displayTime();
+	if(g_turn_count>0)
+	g_FPS_tracker++;
+	
+}
+
+function game_loop(){
+	
+	m_ctxt.fillStyle = 'white';
+	Refresh_Screen();
+	create_arena();
+	
+	load_array_sequence();
+	Draw_Items_Positions();
+	
+	Game_timer_Set();
+	
+	
+}
+
+window.addEventListener('mousedown',determine_Box);
+window.addEventListener('mousemove',event_mouse_position);	
+
+setInterval(game_loop,100);
+
+</script>
+
+<h3>Author: Akhil Raja</h3>
+
+<br /><br /><br />
+
+<h3>Objective:</h3>
+
+<ul>
+
+    <li>The objective of the game is to acquire the Power-ups by moving the Snake and reach the score of 200 first.</li>
+
+    <li>The Snake can be moved in 8 directions using single/multiple arrow keys.</li>
+
+    <li>The speed and length of the Snake varies depending upon the powerups acquired.</li>
+    
+    <li>The Snake dies if it hits the wall or another Snake.</li>
+    
+</ul>
+
+<br /><br />
+
+<h3>Logic Design and Implementation:</h3> 
+
+<ul>
+<li>Create Snake class, which comprises of an array of square objects to constitute the Snake body.</li>
+
+<li>Create another two arrays to store x and y coordinates such that they keep track of each pixel of each square node constituting the Snake body, so that using these arrays, the snake can be moved at any desired speed.</li>
+
+<li>Create movement logic, such that on pressing the required keys or the combination of those keys, vertical, horizontal or diagonal movement can be obtained.</li>
+
+<li>Create variables to hold the score and the number of lives of both the Snakes.</li>
+
+<li>Create logics to determine when the game is over and display it on the screen.</li>
+
+</ul>
+
+<br /><br />
+
+<h3>Scope For Improvement:</h3>
+
+<ul><li>Creating another set of Power-ups, for example, bullets, which when aquired, the Snake would be able to shoot them in the direction its head faces.</ul>
+
+<ul><li>Implement Audio to the game.</ul>
+
+  </div> 
+
+  <!--content-->
+
+</div> <!-- Container ends here -->
+
+<!--  Footer -->
+
+<div id="info-site">
+
+ </div>
+
+</body>
+
+</html>
